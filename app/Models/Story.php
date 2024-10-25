@@ -5,24 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Publication extends Model
+class Story extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['caption', 'image_url', 'user_id'];
+    protected $fillable = ['image_url', 'user_id', 'expires_at'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
     public function likes()
     {
-        return $this->hasMany(Publilike::class);
+        return $this->hasMany(StoryLike::class);
     }
 }

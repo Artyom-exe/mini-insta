@@ -9,42 +9,15 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'profile_photo',
+        'bio',
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
 
     public function publications()
     {
@@ -56,42 +29,22 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function publiLikes()
-    {
-        return $this->hasMany(Like::class);
-    }
-
-    public function commentLikes()
-    {
-        return $this->hasMany(CommentLike::class);
-    }
-
-    public function storyLikes()
-    {
-        return $this->hasMany(StoryLike::class);
-    }
-
-    public function stories()
-    {
-        return $this->hasMany(Story::class);
-    }
-
     public function followers()
     {
-        return $this->hasMany(Follow::class, 'followed_id');
+        return $this->belongsToMany(User::class, 'follows', 'followed_id', 'follower_id');
     }
 
     public function followings()
     {
-        return $this->hasMany(Follow::class, 'follower_id');
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_id');
     }
 
-    public function sentMessages()
+    public function messagesSent()
     {
         return $this->hasMany(PrivateMessage::class, 'sender_id');
     }
 
-    public function receivedMessages()
+    public function messagesReceived()
     {
         return $this->hasMany(PrivateMessage::class, 'receiver_id');
     }
@@ -99,5 +52,25 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function storyLikes()
+    {
+        return $this->hasMany(StoryLike::class);
+    }
+
+    public function commentLikes()
+    {
+        return $this->hasMany(CommentLike::class);
+    }
+
+    public function publiLikes()
+    {
+        return $this->hasMany(Publilike::class);
+    }
+
+    public function stories()
+    {
+        return $this->hasMany(Story::class);
     }
 }
