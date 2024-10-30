@@ -14,7 +14,7 @@ class PublicationsTableSeeder extends Seeder
     public function run(): void
     {
         Publication::factory()
-            ->count(50)
+            ->count(200)
             ->create();
     }
 }

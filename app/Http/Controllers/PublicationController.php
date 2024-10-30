@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Publication;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
+
+
 class PublicationController extends Controller
 {
     public function index()
@@ -20,46 +23,40 @@ class PublicationController extends Controller
 
     public function store(Request $request)
     {
-        // Validation des données d'entrée
-        $validatedData = $request->validate([
+        // Valider les données reçues
+        $request->validate([
             'caption' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|max:5120', // Limite de taille en Ko
         ]);
 
-        // Traitement de l'upload d'image
+        // Vérifier que le fichier a bien été reçu
         if ($request->hasFile('image')) {
-            try {
-                // Stocke le fichier et récupère le chemin
-                $path = $request->file('image')->store('publications', 'public');
-                if (!$path) {
-                    return redirect()->back()->withErrors(['image' => 'Image upload failed.']);
-                }
+            // Générer un nom de fichier unique basé sur le timestamp
+            $fileName = time() . '_' . $request->file('image')->getClientOriginalName();
 
-                // Création de la publication
-                $publication = Publication::create([
-                    'caption' => $validatedData['caption'],
-                    'image_url' => $path,
-                    'user_id' => auth()->id(),
-                ]);
+            // Stocker le fichier dans le dossier `storage/app/public/images`
+            $path = $request->file('image')->storeAs('images', $fileName, 'public');
 
-                if (!$publication) {
-                    return redirect()->back()->withErrors(['publication' => 'Publication creation failed.']);
-                }
+            // Enregistrer la publication dans la base de données avec le chemin de l'image
+            auth()->user()->publications()->create([
+                'caption' => $request->caption,
+                'image_url' => $path,
+            ]);
 
-                return redirect()->route('feed')->with('success', 'Publication created successfully.');
-            } catch (\Exception $e) {
-                return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()]);
-            }
+            // Rediriger vers le feed avec un message de succès
+            return redirect()->route('feed')->with('success', 'Publication ajoutée avec succès !');
         }
 
-        return redirect()->back()->withErrors(['image' => 'No image file provided.']);
+        // En cas d'échec du téléchargement
+        return redirect()->back()->withErrors(['image' => 'Échec du téléchargement de l\'image.']);
     }
+
 
 
     public function show($id)
     {
         $publication = Publication::with('user', 'comments', 'likes')->findOrFail($id);
-        return view('publication-detail', compact('publication'));
+        return view('publication.publication-detail', compact('publication'));
     }
 
     public function destroy($id)

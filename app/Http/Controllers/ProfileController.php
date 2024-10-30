@@ -8,9 +8,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
+
+    public function show($id)
+    {
+        // Récupérer l'utilisateur par son ID
+        $user = User::with(['publications' => function ($query) {
+            $query->latest(); // Trie les publications de la plus récente à la plus ancienne
+        }])->findOrFail($id);
+
+        return view('profile.show', compact('user'));
+    }
+
     /**
      * Display the user's profile form.
      */

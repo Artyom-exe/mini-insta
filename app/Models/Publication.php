@@ -23,6 +23,6 @@ class Publication extends Model
 
     public function likes()
     {
-        return $this->hasMany(Publilike::class);
+        return $this->hasMany(PubliLike::class);
     }
 }

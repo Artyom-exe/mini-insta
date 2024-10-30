@@ -7,6 +7,8 @@ use App\Http\Controllers\StoryController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\FeedController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,9 +23,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Profile routes
-    Route::get('/profile/{id}', [ProfileController::class, 'showProfile'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'editProfile'])->name('profile.edit');
-    Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Publication routes
     Route::get('/feed', [PublicationController::class, 'index'])->name('feed');
@@ -41,11 +44,19 @@ Route::middleware(['auth'])->group(function () {
 
     // Like routes
     Route::post('/publication/{publicationId}/like', [LikeController::class, 'likePublication'])->name('like.publication');
+    Route::delete('/publication/{publicationId}/unlike', [LikeController::class, 'unlikePublication'])->name('unlike.publication');
+
     Route::post('/comment/{commentId}/like', [LikeController::class, 'likeComment'])->name('like.comment');
-    Route::post('/story/{storyId}/like', [LikeController::class, 'likeStory'])->name('like.story');
+    Route::delete('/comment/{commentId}/unlike', [LikeController::class, 'unlikeComment'])->name('unlike.comment');
 
     // Story routes
     Route::get('/story/create', [StoryController::class, 'create'])->name('story.create');
     Route::post('/story/store', [StoryController::class, 'store'])->name('story.store');
     Route::get('/story/{id}', [StoryController::class, 'show'])->name('story.show');
+
+    // Search routes
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+    // Feed routes
+    Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 });

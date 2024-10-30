@@ -19,7 +19,7 @@ class CommentController extends Controller
         Comment::create([
             'content' => $request->content,
             'user_id' => auth()->id(),
-            'post_id' => $publication->id,
+            'publication_id' => $publication->id,
         ]);
 
         return redirect()->route('publication.show', $publication->id)->with('success', 'Comment added successfully.');

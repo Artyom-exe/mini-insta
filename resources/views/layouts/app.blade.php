@@ -29,10 +29,16 @@
                         </a>
                     </div>
                     <!-- Middle: Search Bar -->
-                    <div class="hidden sm:block w-1/3">
-                        <input type="text" placeholder="Search"
-                            class="w-full px-4 py-2 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    </div>
+                    <form action="{{ route('search') }}" method="GET" class="flex items-center">
+                        <input type="text" name="query"
+                            placeholder="Rechercher des publications ou des utilisateurs..."
+                            class="px-4 py-2 border rounded-md" required>
+                        <button type="submit"
+                            class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                            Rechercher
+                        </button>
+                    </form>
+
                     <!-- Right Side: Links and Profile -->
                     <div class="flex items-center space-x-4">
                         <a href="{{ route('feed') }}" class="text-gray-700 hover:text-gray-900">

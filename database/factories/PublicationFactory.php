@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Publication>
@@ -30,6 +31,8 @@ class PublicationFactory extends Factory
                 return $path;
             },
             'user_id' => User::get()->random()->id,
+            'created_at' => Carbon::now()->subDays(rand(1, 365)), // Date aléatoire dans les 365 derniers jours
+            'updated_at' => Carbon::now()->subDays(rand(1, 365)),
         ];
     }
 }

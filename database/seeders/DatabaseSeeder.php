@@ -11,9 +11,11 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
+
+
     public function run(): void
     {
-        User::factory(5)->create();
+        User::factory(99)->create();
 
         User::factory()->create([
             'name' => 'Test User',
@@ -22,6 +24,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             PublicationsTableSeeder::class,
+            CommentSeeder::class,
+            LikeAndFollowSeeder::class,
+
         ]);
     }
 }

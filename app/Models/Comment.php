@@ -9,7 +9,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content', 'user_id', 'post_id'];
+    protected $fillable = ['content', 'user_id', 'publication_id'];
 
     public function user()
     {
@@ -18,7 +18,7 @@ class Comment extends Model
 
     public function publication()
     {
-        return $this->belongsTo(Publication::class, 'post_id');
+        return $this->belongsTo(Publication::class, 'publication_id');
     }
 
     public function likes()

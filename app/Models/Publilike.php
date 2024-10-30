@@ -9,7 +9,7 @@ class Publilike extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'publ_id'];
+    protected $fillable = ['user_id', 'publication_id'];
 
     public function user()
     {
@@ -18,6 +18,6 @@ class Publilike extends Model
 
     public function publication()
     {
-        return $this->belongsTo(Publication::class, 'publ_id');
+        return $this->belongsTo(Publication::class, 'publication_id');
     }
 }
