@@ -15,9 +15,10 @@ class ProfileController extends Controller
 {
     public function show($id): View
     {
-        // Récupérer l'utilisateur par son ID
+        // Récupérer l'utilisateur par son ID avec ses publications et leurs likes
         $user = User::with(['publications' => function ($query) {
-            $query->latest(); // Trie les publications de la plus récente à la plus ancienne
+            $query->withCount('likes') // Compte les likes pour chaque publication
+                ->latest(); // Trie les publications de la plus récente à la plus ancienne
         }])->findOrFail($id);
 
         return view('profile.show', compact('user'));
