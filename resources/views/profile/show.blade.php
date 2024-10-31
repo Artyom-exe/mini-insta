@@ -32,6 +32,14 @@
                                 </form>
                             @endif
                         </div>
+
+                        <!-- Lien vers la conversation privée -->
+                        <div class="mt-4">
+                            <a href="{{ route('messages.conversation', $user->id) }}"
+                                class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                                Envoyer un message
+                            </a>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -50,7 +58,6 @@
                             <p class="text-gray-500 text-sm">Publié le {{ $publication->created_at->format('d M Y') }}
                             </p>
                             <p class="text-gray-500 text-sm">{{ $publication->likes_count }} likes</p>
-                            <!-- Affiche le nombre de likes -->
                         </div>
                     </div>
                 @empty

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Http\Controllers\LikeController;
 
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -45,12 +46,12 @@ class User extends Authenticatable
         return $this->followings->contains($user);
     }
 
-    public function messagesSent()
+    public function sender()
     {
         return $this->hasMany(PrivateMessage::class, 'sender_id');
     }
 
-    public function messagesReceived()
+    public function receiver()
     {
         return $this->hasMany(PrivateMessage::class, 'receiver_id');
     }
@@ -63,6 +64,11 @@ class User extends Authenticatable
     public function storyLikes()
     {
         return $this->hasMany(StoryLike::class);
+    }
+
+    public function hasLikedStory($story)
+    {
+        return $this->storyLikes()->where('story_id', $story->id)->exists();
     }
 
     public function commentLikes()

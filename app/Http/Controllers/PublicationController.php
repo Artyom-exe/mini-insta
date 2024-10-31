@@ -63,12 +63,12 @@ class PublicationController extends Controller
     {
         $publication = Publication::findOrFail($id);
 
+        // Vérifie si l'utilisateur est bien le propriétaire de la publication
         if ($publication->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
 
         $publication->delete();
-
-        return redirect()->route('feed')->with('success', 'Publication deleted successfully.');
+        return redirect()->route('feed')->with('success', 'Publication supprimée.');
     }
 }

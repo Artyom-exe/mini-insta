@@ -2,6 +2,28 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <h1 class="text-2xl font-semibold mb-4">Votre Fil d'Actualité</h1>
 
+        <!-- Section des Stories -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Stories des utilisateurs que vous suivez</h2>
+            <div class="flex space-x-4 overflow-x-auto">
+                @foreach ($followedStories as $story)
+                    <div class="bg-white shadow-sm rounded-lg p-4 w-40">
+                        <a href="{{ route('story.show', $story->id) }}">
+                            <img src="{{ Storage::url($story->image_url) }}" alt="Story Image"
+                                class="w-full h-32 object-cover rounded">
+                        </a>
+                        <div class="mt-2 text-center">
+                            <p class="font-semibold">
+                                <a href="{{ route('profile.show', $story->user->id) }}">
+                                    {{ $story->user->name }}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- Section des publications des utilisateurs suivis -->
         <div class="mb-8">
             <h2 class="text-xl font-semibold mb-4">Publications des utilisateurs que vous suivez</h2>

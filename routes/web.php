@@ -9,6 +9,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\FeedController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\MessageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,12 +27,13 @@ Route::middleware(['auth'])->group(function () {
 
     // Profile routes
     Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
+    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.update.photo');
+    Route::patch('/profile/update-bio', [ProfileController::class, 'updateBio'])->name('profile.update.bio');
 
     // Publication routes
-    Route::get('/feed', [PublicationController::class, 'index'])->name('feed');
     Route::get('/publication/create', [PublicationController::class, 'create'])->name('publication.create');
     Route::post('/publication/store', [PublicationController::class, 'store'])->name('publication.store');
     Route::get('/publication/{id}', [PublicationController::class, 'show'])->name('publication.show');
@@ -41,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Comment routes
     Route::post('/publication/{publicationId}/comment', [CommentController::class, 'store'])->name('comment.store');
+    Route::delete('/comment/{commentId}', [CommentController::class, 'destroy'])->name('comment.destroy'); // Suppression d'un commentaire
 
     // Like routes
     Route::post('/publication/{publicationId}/like', [LikeController::class, 'likePublication'])->name('like.publication');
@@ -49,14 +54,30 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/comment/{commentId}/like', [LikeController::class, 'likeComment'])->name('like.comment');
     Route::delete('/comment/{commentId}/unlike', [LikeController::class, 'unlikeComment'])->name('unlike.comment');
 
+    Route::post('/story/{storyId}/like', [LikeController::class, 'likeStory'])->name('like.story');
+    Route::delete('/story/{storyId}/unlike', [LikeController::class, 'unlikeStory'])->name('unlike.story');
+
     // Story routes
     Route::get('/story/create', [StoryController::class, 'create'])->name('story.create');
     Route::post('/story/store', [StoryController::class, 'store'])->name('story.store');
     Route::get('/story/{id}', [StoryController::class, 'show'])->name('story.show');
+    Route::delete('/story/{id}', [StoryController::class, 'destroy'])->name('story.delete'); // Suppression d'une story
 
     // Search routes
     Route::get('/search', [SearchController::class, 'index'])->name('search');
 
     // Feed routes
     Route::get('/feed', [FeedController::class, 'index'])->name('feed');
+
+    // Logout routes
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    // Notification routes
+    Route::post('/notifications/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+
+    // Message routes
+    Route::get('/messages/{user}', [MessageController::class, 'showConversation'])->name('messages.conversation');
+    Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages');
+    Route::delete('/messages/conversation/{user}', [MessageController::class, 'deleteConversation'])->name('messages.delete');
 });

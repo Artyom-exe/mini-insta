@@ -9,7 +9,7 @@ class StoryController extends Controller
 {
     public function create()
     {
-        return view('create-story');
+        return view('story.create-story');
     }
 
     public function store(Request $request)
@@ -32,6 +32,6 @@ class StoryController extends Controller
     public function show($id)
     {
         $story = Story::with('user', 'likes')->findOrFail($id);
-        return view('story-detail', compact('story'));
+        return view('story.story-detail', compact('story'));
     }
 }

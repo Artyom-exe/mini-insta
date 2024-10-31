@@ -21,10 +21,20 @@
                 </p>
                 <p class="text-gray-500">{{ $publication->likes->count() }} likes</p>
 
+                <!-- Bouton de suppression de la publication si elle appartient à l'utilisateur -->
+                @if (auth()->id() === $publication->user_id)
+                    <form action="{{ route('publication.delete', $publication->id) }}" method="POST" class="mt-4">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                            Supprimer cette publication
+                        </button>
+                    </form>
+                @endif
+
                 <!-- Bouton Like / Unlike pour la publication -->
                 <div class="mt-4">
                     @if (auth()->user()->publiLikes->where('publication_id', $publication->id)->count())
-                        <!-- Bouton Unlike si déjà liké -->
                         <form action="{{ route('unlike.publication', $publication->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -33,7 +43,6 @@
                             </button>
                         </form>
                     @else
-                        <!-- Bouton Like si non liké -->
                         <form action="{{ route('like.publication', $publication->id) }}" method="POST">
                             @csrf
                             <button type="submit"
@@ -57,20 +66,27 @@
                         </p>
                         <span class="text-gray-500">{{ $comment->likes->count() }} likes</span>
 
-                        <!-- Boutons Like et Unlike pour chaque commentaire -->
                         <div class="flex items-center space-x-2 mt-1">
+                            <!-- Boutons Like et Unlike pour chaque commentaire -->
                             @if (auth()->user()->commentLikes->where('comment_id', $comment->id)->count())
-                                <!-- Bouton Unlike si déjà liké -->
                                 <form action="{{ route('unlike.comment', $comment->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:underline">Unlike</button>
                                 </form>
                             @else
-                                <!-- Bouton Like si non liké -->
                                 <form action="{{ route('like.comment', $comment->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="text-blue-500 hover:underline">Like</button>
+                                </form>
+                            @endif
+
+                            <!-- Bouton de suppression du commentaire -->
+                            @if (auth()->id() === $comment->user_id || auth()->id() === $publication->user_id)
+                                <form action="{{ route('comment.destroy', $comment->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:underline">Supprimer</button>
                                 </form>
                             @endif
                         </div>

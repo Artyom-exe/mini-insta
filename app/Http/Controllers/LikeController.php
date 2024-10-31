@@ -16,9 +16,16 @@ class LikeController extends Controller
     {
         $comment = Comment::findOrFail($commentId);
         if (!$comment->likes()->where('user_id', auth()->id())->exists()) {
+            // Crée le like pour le commentaire
             CommentLike::create([
                 'user_id' => auth()->id(),
                 'comment_id' => $commentId,
+            ]);
+
+            // Crée une notification pour le propriétaire du commentaire
+            $comment->user->notifications()->create([
+                'message' => auth()->user()->name . ' a liké votre commentaire.',
+                'is_read' => false,
             ]);
         }
         return redirect()->back();
@@ -28,9 +35,16 @@ class LikeController extends Controller
     {
         $publication = Publication::findOrFail($publicationId);
         if (!$publication->likes()->where('user_id', auth()->id())->exists()) {
+            // Crée le like pour la publication
             PubliLike::create([
                 'user_id' => auth()->id(),
                 'publication_id' => $publicationId,
+            ]);
+
+            // Crée une notification pour le propriétaire de la publication
+            $publication->user->notifications()->create([
+                'message' => auth()->user()->name . ' a liké votre publication.',
+                'is_read' => false,
             ]);
         }
         return redirect()->back();
@@ -40,13 +54,21 @@ class LikeController extends Controller
     {
         $story = Story::findOrFail($storyId);
         if (!$story->likes()->where('user_id', auth()->id())->exists()) {
+            // Crée le like pour la story
             StoryLike::create([
                 'user_id' => auth()->id(),
                 'story_id' => $storyId,
             ]);
+
+            // Crée une notification pour le propriétaire de la story
+            $story->user->notifications()->create([
+                'message' => auth()->user()->name . ' a liké votre story.',
+                'is_read' => false,
+            ]);
         }
         return redirect()->back();
     }
+
 
     public function unlikeComment($commentId)
     {
