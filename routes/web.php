@@ -14,7 +14,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MessageController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('feed');
 });
 
 // Laravel Breeze Auth routes

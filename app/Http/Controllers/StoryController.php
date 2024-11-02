@@ -31,7 +31,10 @@ class StoryController extends Controller
 
     public function show($id)
     {
-        $story = Story::with('user', 'likes')->findOrFail($id);
+        // Récupère uniquement la story si elle n'a pas expiré
+        $story = Story::with('user', 'likes')
+            ->where('expires_at', '>', now())
+            ->findOrFail($id);
         return view('story.story-detail', compact('story'));
     }
 }

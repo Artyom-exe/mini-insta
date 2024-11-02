@@ -16,6 +16,7 @@ class FeedController extends Controller
         $followedStories = Story::whereIn('user_id', $user->followings->pluck('id'))
             ->latest() // Trie par created_at DESC
             ->with('user', 'likes')
+            ->where('expires_at', '>', now())
             ->take(20)
             ->get();
 
@@ -26,13 +27,13 @@ class FeedController extends Controller
             ->take(20)
             ->get();
 
-        // Récupérer les publications les plus likées (hors utilisateurs suivis)
         $popularPublications = Publication::withCount('likes')
-            ->whereNotIn('user_id', $user->followings->pluck('id'))
+            ->whereNotIn('user_id', $user->followings->pluck('id')->push($user->id)) // Ajoutez aussi l'utilisateur lui-même si nécessaire
             ->orderBy('likes_count', 'desc')
             ->with('user', 'likes')
             ->take(20)
             ->get();
+
 
         return view('publication.feed', compact('followedStories', 'followedPublications', 'popularPublications'));
     }
