@@ -14,8 +14,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
-
-
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="//unpkg.com/alpinejs" defer></script>
@@ -82,18 +80,24 @@
                                 @endforelse
                             </div>
                         </div>
+
+                        <!-- Profile Dropdown -->
                         <div class="relative">
                             <button type="button" class="flex items-center focus:outline-none" @click="open = !open">
-                                <img src="{{ Storage::url(auth()->user()->profile_photo) }}"
+                                <img src="{{ auth()->user()->profile_photo ? Storage::url(auth()->user()->profile_photo) : asset('images/default-profile.png') }}"
                                     class="h-8 w-8 rounded-full">
+
                             </button>
                             <div x-show="open" x-transition
                                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                                <a href="{{ route('profile.show', auth()->user()->id) }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil</a>
                                 <a href="{{ route('edit') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Profile</a>
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Modifier le
+                                    profil</a>
                                 <a href="{{ route('logout') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Déconnexion</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                                     @csrf
                                 </form>
@@ -151,23 +155,34 @@
                         @endforelse
                     </div>
 
-                    <a href="{{ route('edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profil</a>
+                    <!-- Profile Links in Mobile Menu -->
+                    <a href="{{ route('profile.show', auth()->user()->id) }}"
+                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profil</a>
+                    <a href="{{ route('edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Modifier le
+                        profil</a>
                     <a href="{{ route('logout') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Déconnexion</a>
                 </div>
             </div>
-
-
         </nav>
 
-        <!-- Page Heading -->
-        @isset($header)
-            <header class="bg-white shadow mt-16">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset
+        <!-- Script pour marquer toutes les notifications comme lues -->
+        <script>
+            function markNotificationsAsRead() {
+                fetch("{{ route('notifications.read') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(() => {
+                        console.log('All notifications marked as read');
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        </script>
 
         <!-- Page Content -->
         <main class="mt-20">
@@ -178,50 +193,9 @@
     <!-- Footer -->
     <footer class="bg-white shadow-inner mt-8 py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-center">
-            <p class="text-gray-600 text-sm">
-                &copy; {{ date('Y') }} MINI-INSTAGRAM. Tous droits réservés.
-            </p>
+            <p class="text-gray-600 text-sm">&copy; {{ date('Y') }} MINI-INSTAGRAM. Tous droits réservés.</p>
         </div>
     </footer>
-
-
-    <!-- Script to mark all notifications as read -->
-    <script>
-        function markNotificationsAsRead() {
-            fetch("{{ route('notifications.read') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                })
-                .then(response => response.json())
-                .then(() => {
-                    console.log('All notifications marked as read');
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function markSingleNotificationAsRead(notificationId) {
-            fetch(`/notifications/read/${notificationId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                })
-                .then(response => response.json())
-                .then(() => {
-                    console.log('Notification marked as read');
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
-
-    <!-- Formulaire de déconnexion caché pour l'option Déconnexion -->
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-        @csrf
-    </form>
 </body>
 
 </html>
