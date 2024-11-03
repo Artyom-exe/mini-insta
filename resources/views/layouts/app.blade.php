@@ -34,14 +34,17 @@
                         </a>
                     </div>
 
-                    <!-- Middle: Search Bar (only on large screens) -->
-                    <form action="{{ route('search') }}" method="GET" class="hidden md:flex items-center">
+                    <!-- Middle: Search Bar (responsive for mobile and large screens) -->
+                    <form action="{{ route('search') }}" method="GET"
+                        class="flex items-center w-full space-x-2 p-2 md:w-auto">
                         <input type="text" name="query" placeholder="Rechercher..."
-                            class="px-4 py-2 border rounded-md" required>
-                        <button type="submit"
-                            class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Rechercher</button>
-                    </form>
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none" required>
+                        <button type="submit" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                            <!-- Utiliser une icône de recherche -->
+                            <i class="ri-seo-line"></i>
 
+                        </button>
+                    </form>
                     <!-- Right Side: Navigation Icons for Large Screens -->
                     <div class="hidden md:flex items-center space-x-4">
                         <a href="{{ route('feed') }}" class="text-gray-700 hover:text-gray-900">
